@@ -1,0 +1,863 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Tumor MRI Detection</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background:
+            radial-gradient(circle at 15% 20%, rgba(79, 140, 255, 0.16), transparent 28%),
+            radial-gradient(circle at 85% 80%, rgba(139, 124, 255, 0.14), transparent 30%),
+            #121a2b;
+        color: #f4f7ff;
+        min-height: 100vh;
+        padding: 35px 20px 50px;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: auto;
+    }
+
+    /* HEADER */
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 45px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #4f8cff, #8b7cff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 8px 25px rgba(79, 140, 255, 0.25);
+    }
+
+    .brand h2 {
+        font-size: 18px;
+        letter-spacing: 1px;
+    }
+
+    .brand span {
+        display: block;
+        font-size: 11px;
+        color: #9eacc7;
+        margin-top: 3px;
+        letter-spacing: 1.5px;
+    }
+
+    .status {
+        padding: 9px 15px;
+        border-radius: 30px;
+        background: rgba(72, 215, 245, 0.08);
+        border: 1px solid rgba(72, 215, 245, 0.25);
+        color: #67def5;
+        font-size: 12px;
+        letter-spacing: 0.7px;
+    }
+
+    /* HERO */
+    .hero {
+        text-align: center;
+        margin-bottom: 38px;
+    }
+
+    .hero-label {
+        color: #67def5;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .hero h1 {
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1.05;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, #ffffff, #a9c8ff, #b7aaff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        color: #aab7ce;
+        max-width: 650px;
+        margin: auto;
+        line-height: 1.7;
+        font-size: 15px;
+    }
+
+    /* MAIN GRID */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 22px;
+        align-items: stretch;
+    }
+
+    .card {
+        background: rgba(29, 42, 65, 0.92);
+        border: 1px solid rgba(148, 172, 210, 0.13);
+        border-radius: 24px;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.22);
+    }
+
+    /* INFO VISUAL */
+    .visual-card {
+        padding: 32px;
+        min-height: 460px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .visual-card::before {
+        content: "";
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(79, 140, 255, 0.11);
+        filter: blur(5px);
+        top: -80px;
+        right: -70px;
+    }
+
+    .small-label {
+        color: #8fa4c6;
+        font-size: 11px;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+        position: relative;
+    }
+
+    .brain-area {
+        height: 270px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .brain {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 1px solid rgba(103, 222, 245, 0.35);
+        background:
+            radial-gradient(circle at 50% 45%,
+                rgba(103, 222, 245, 0.20),
+                rgba(79, 140, 255, 0.08) 45%,
+                transparent 70%);
+        box-shadow:
+            0 0 45px rgba(79, 140, 255, 0.18),
+            inset 0 0 35px rgba(103, 222, 245, 0.07);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 75px;
+    }
+
+    .orbit {
+        position: absolute;
+        width: 235px;
+        height: 235px;
+        border: 1px dashed rgba(103, 222, 245, 0.22);
+        border-radius: 50%;
+    }
+
+    .scan-line {
+        position: absolute;
+        width: 230px;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            #67def5,
+            transparent
+        );
+        box-shadow: 0 0 12px #67def5;
+        animation: scan 3s infinite ease-in-out;
+    }
+
+    @keyframes scan {
+        0%, 100% {
+            transform: translateY(-90px);
+            opacity: 0.2;
+        }
+
+        50% {
+            transform: translateY(90px);
+            opacity: 1;
+        }
+    }
+
+    .visual-bottom {
+        position: relative;
+        border-top: 1px solid rgba(255,255,255,0.07);
+        padding-top: 20px;
+    }
+
+    .visual-bottom h3 {
+        font-size: 19px;
+        margin-bottom: 8px;
+    }
+
+    .visual-bottom p {
+        color: #9eacc4;
+        line-height: 1.6;
+        font-size: 13px;
+    }
+
+    /* UPLOAD */
+    .upload-card {
+        padding: 32px;
+    }
+
+    .upload-card h2 {
+        font-size: 24px;
+        margin: 10px 0 8px;
+    }
+
+    .upload-card > p {
+        color: #9eacc4;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .upload-box {
+        min-height: 255px;
+        border: 1.5px dashed rgba(103, 222, 245, 0.35);
+        border-radius: 18px;
+        background: rgba(9, 18, 34, 0.25);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        transition: 0.25s ease;
+    }
+
+    .upload-box:hover {
+        border-color: #67def5;
+        background: rgba(103, 222, 245, 0.04);
+    }
+
+    .upload-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        background: rgba(79, 140, 255, 0.12);
+        border: 1px solid rgba(79, 140, 255, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 27px;
+        margin-bottom: 15px;
+    }
+
+    .upload-box strong {
+        font-size: 15px;
+        margin-bottom: 6px;
+    }
+
+    .upload-box span {
+        color: #8494b0;
+        font-size: 12px;
+        margin-bottom: 18px;
+    }
+
+    #imageInput {
+        color: #b8c5da;
+        font-size: 12px;
+        max-width: 100%;
+    }
+
+    #preview {
+        max-width: 100%;
+        max-height: 220px;
+        margin-top: 20px;
+        border-radius: 14px;
+        border: 1px solid rgba(103, 222, 245, 0.2);
+        display: none;
+        object-fit: contain;
+        background: #0c1422;
+    }
+
+    .predict-btn {
+        width: 100%;
+        margin-top: 18px;
+        padding: 15px;
+        border: none;
+        border-radius: 13px;
+        background: linear-gradient(100deg, #4f8cff, #667dff);
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 10px 28px rgba(79, 140, 255, 0.23);
+        transition: 0.2s ease;
+    }
+
+    .predict-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(79, 140, 255, 0.32);
+    }
+
+    /* RESULT */
+    #result {
+        margin-top: 18px;
+        padding: 15px;
+        border-radius: 13px;
+        background: rgba(103, 222, 245, 0.06);
+        border: 1px solid rgba(103, 222, 245, 0.14);
+        color: #dbeaff;
+        font-size: 15px;
+        font-weight: bold;
+        min-height: 20px;
+    }
+
+    /* MODEL DETAILS */
+    .section-title {
+        margin: 55px 0 20px;
+    }
+
+    .section-title span {
+        color: #67def5;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .section-title h2 {
+        margin-top: 7px;
+        font-size: 25px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+
+    .stat-card {
+        padding: 23px;
+        background: #1d2a41;
+        border: 1px solid rgba(148, 172, 210, 0.12);
+        border-radius: 18px;
+    }
+
+    .stat-value {
+        font-size: 29px;
+        font-weight: bold;
+        color: #72dff5;
+        margin-bottom: 7px;
+    }
+
+    .stat-name {
+        color: #aab8ce;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    /* DETAILS */
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .details-card {
+        padding: 27px;
+        background: #1d2a41;
+        border: 1px solid rgba(148, 172, 210, 0.12);
+        border-radius: 20px;
+    }
+
+    .details-card h3 {
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        font-size: 13px;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-row span:first-child {
+        color: #899ab5;
+    }
+
+    .detail-row span:last-child {
+        color: #e7edfa;
+        text-align: right;
+        font-weight: 600;
+    }
+
+    /* CLASSES */
+    .classes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 12px;
+    }
+
+    .class-tag {
+        padding: 8px 12px;
+        border-radius: 20px;
+        background: rgba(79, 140, 255, 0.10);
+        border: 1px solid rgba(79, 140, 255, 0.18);
+        color: #bcd2ff;
+        font-size: 12px;
+    }
+
+    /* DISCLAIMER */
+    .notice {
+        margin-top: 20px;
+        padding: 17px 20px;
+        border-radius: 16px;
+        background: rgba(245, 185, 75, 0.06);
+        border: 1px solid rgba(245, 185, 75, 0.15);
+        color: #b9b6aa;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 45px;
+        color: #71809b;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+        .main-grid,
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .visual-card {
+            min-height: auto;
+        }
+    }
+
+    @media (max-width: 520px) {
+        body {
+            padding: 22px 14px 35px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        .status {
+            display: none;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .visual-card,
+        .upload-card {
+            padding: 22px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon">🧠</div>
+            <div>
+                <h2>NEUROSCAN</h2>
+                <span>AI-ASSISTED MRI ANALYSIS</span>
+            </div>
+        </div>
+
+        <div class="status">
+            ● MODEL READY
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-label">Brain MRI Classification</div>
+
+        <h1>Brain Tumor<br>Detection</h1>
+
+        <p>
+            Upload a brain MRI image and let the trained CNN model
+            classify it into one of four image classes.
+        </p>
+    </section>
+
+
+    <!-- MAIN PREDICTION AREA -->
+    <div class="main-grid">
+
+        <!-- LEFT -->
+        <div class="card visual-card">
+
+            <div class="small-label">
+                Intelligent MRI Imaging
+            </div>
+
+            <div class="brain-area">
+                <div class="orbit"></div>
+
+                <div class="brain">
+                    🧠
+                </div>
+
+                <div class="scan-line"></div>
+            </div>
+
+            <div class="visual-bottom">
+                <h3>AI-powered image classification</h3>
+
+                <p>
+                    The model processes the uploaded MRI image and
+                    generates a predicted class together with its
+                    confidence score.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+        <div class="card upload-card">
+
+            <div class="small-label">
+                MRI ANALYSIS
+            </div>
+
+            <h2>Upload MRI Scan</h2>
+
+            <p>
+                Select an MRI image to start the classification process.
+            </p>
+
+            <div class="upload-box">
+
+                <div class="upload-icon">
+                    ↑
+                </div>
+
+                <strong>Select MRI Image</strong>
+
+                <span>
+                    Supported image files
+                </span>
+
+                <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                >
+
+                <img id="preview">
+
+            </div>
+
+            <button class="predict-btn" onclick="predict()">
+                Analyze MRI
+            </button>
+
+            <div id="result"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PERFORMANCE -->
+    <div class="section-title">
+        <span>Model Performance</span>
+        <h2>Evaluation Results</h2>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-value">91.56%</div>
+            <div class="stat-name">Test Accuracy</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">91.50%</div>
+            <div class="stat-name">Test Recall</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">91.67%</div>
+            <div class="stat-name">Test Precision</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value">1.0660</div>
+            <div class="stat-name">Test Loss</div>
+        </div>
+
+    </div>
+
+
+    <!-- MODEL DETAILS -->
+    <div class="section-title">
+        <span>Technical Details</span>
+        <h2>About the Model</h2>
+    </div>
+
+    <div class="details-grid">
+
+        <div class="details-card">
+
+            <h3>🧠 CNN Configuration</h3>
+
+            <div class="detail-row">
+                <span>Architecture</span>
+                <span>Convolutional Neural Network</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Convolution Layers</span>
+                <span>6</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Input Size</span>
+                <span>256 × 256</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Color Mode</span>
+                <span>Grayscale</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Optimizer</span>
+                <span>Adam</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Output Activation</span>
+                <span>Softmax</span>
+            </div>
+
+        </div>
+
+
+        <div class="details-card">
+
+            <h3>⚙️ Training Configuration</h3>
+
+            <div class="detail-row">
+                <span>Hyperparameter Tuning</span>
+                <span>Keras Tuner</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Search Method</span>
+                <span>Random Search</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Maximum Trials</span>
+                <span>10</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Batch Size</span>
+                <span>32</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Normalization</span>
+                <span>Pixel / 255</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Early Stopping</span>
+                <span>Validation Recall</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DATASET -->
+    <div class="section-title">
+        <span>Dataset</span>
+        <h2>Training & Testing Information</h2>
+    </div>
+
+    <div class="details-grid">
+
+        <div class="details-card">
+
+            <h3>📊 Dataset Split</h3>
+
+            <div class="detail-row">
+                <span>Training Directory</span>
+                <span>5,600 images</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Training Images</span>
+                <span>4,760</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Validation Images</span>
+                <span>840</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Validation Split</span>
+                <span>15%</span>
+            </div>
+
+            <div class="detail-row">
+                <span>Testing Images</span>
+                <span>1,600</span>
+            </div>
+
+        </div>
+
+
+        <div class="details-card">
+
+            <h3>🔬 Classification Classes</h3>
+
+            <p style="color:#899ab5; font-size:13px; margin-bottom:15px;">
+                The model produces predictions across four classes:
+            </p>
+
+            <div class="classes">
+
+                <div class="class-tag">
+                    Glioma
+                </div>
+
+                <div class="class-tag">
+                    Meningioma
+                </div>
+
+                <div class="class-tag">
+                    Pituitary
+                </div>
+
+                <div class="class-tag">
+                    No Tumor
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTICE -->
+    <div class="notice">
+        <strong>Important:</strong>
+        This application is an AI-based image classification project
+        for educational and research purposes. Model predictions should
+        not be considered a medical diagnosis or a substitute for
+        evaluation by a qualified healthcare professional.
+    </div>
+
+
+    <footer>
+        Brain Tumor MRI Detection · CNN Image Classification<br>
+        AI-assisted analysis for educational and research purposes
+    </footer>
+
+</div>
+
+
+<script>
+    const input = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+    const result = document.getElementById("result");
+
+    input.addEventListener("change", () => {
+        const file = input.files[0];
+        if (file) {
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = "block";
+        }
+    });
+
+    async function predict() {
+        const file = input.files[0];
+        if (!file) {
+            alert("Please select an image first");
+            return;
+        }
+
+        result.innerText = "Predicting...";
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            result.innerText = `Prediction: ${data.predicted_class} (${data.confidence}% confidence)`;
+        } catch (error) {
+            result.innerText = "Error: could not connect to server";
+        }
+    }
+</script>
+
+</body>
+</html>
+```
