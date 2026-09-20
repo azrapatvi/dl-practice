@@ -1,0 +1,1640 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Breast Cancer Prediction</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(circle at 0% 0%, #fce7f3 0, transparent 28%),
+                radial-gradient(circle at 100% 100%, #ede9fe 0, transparent 30%),
+                #f8fafc;
+
+            color: #29223d;
+            padding: 35px;
+        }
+
+
+        /* MAIN CONTAINER */
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+
+            background: rgba(255, 255, 255, 0.96);
+
+            border-radius: 32px;
+            padding: 38px;
+
+            border: 1px solid #eeeaf3;
+
+            box-shadow:
+                0 25px 80px rgba(88, 65, 120, 0.12),
+                0 5px 20px rgba(88, 65, 120, 0.05);
+        }
+
+
+        /* TOP BAR */
+
+        .top-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 38px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 46px;
+            height: 46px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+            color: white;
+
+            background:
+                linear-gradient(135deg, #ec4899, #8b5cf6);
+
+            box-shadow:
+                0 8px 20px rgba(236, 72, 153, 0.22);
+        }
+
+        .brand-text {
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            color: #7b7488;
+
+            text-transform: uppercase;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 9px 15px;
+
+            border-radius: 50px;
+
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+
+            color: #16a34a;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 8px rgba(34, 197, 94, 0.5);
+        }
+
+
+        /* HERO */
+
+        .hero {
+            display: grid;
+
+            grid-template-columns: 0.8fr 1.7fr;
+
+            gap: 45px;
+
+            margin-bottom: 45px;
+        }
+
+
+        /* LEFT */
+
+        .hero-left {
+            position: sticky;
+            top: 30px;
+
+            height: fit-content;
+
+            padding: 20px 10px;
+        }
+
+        .mini-label {
+            display: inline-block;
+
+            padding: 7px 12px;
+
+            border-radius: 50px;
+
+            background: #fdf2f8;
+
+            color: #db2777;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.8px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 47px;
+
+            line-height: 1.04;
+
+            letter-spacing: -2px;
+
+            color: #29223d;
+
+            margin-bottom: 18px;
+        }
+
+        h1 span {
+            background:
+                linear-gradient(135deg, #db2777, #7c3aed);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .description {
+            color: #858092;
+
+            font-size: 15px;
+
+            line-height: 1.7;
+
+            max-width: 350px;
+        }
+
+
+        /* VISUAL CARD */
+
+        .visual-card {
+            position: relative;
+
+            width: 100%;
+            height: 250px;
+
+            margin-top: 40px;
+
+            border-radius: 25px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(135deg, #fdf2f8, #f5f3ff);
+
+            border: 1px solid #f0e7f3;
+
+            box-shadow:
+                0 15px 35px rgba(109, 78, 132, 0.08);
+        }
+
+        .circle-one {
+            position: absolute;
+
+            width: 190px;
+            height: 190px;
+
+            border-radius: 50%;
+
+            background: rgba(236, 72, 153, 0.08);
+
+            top: 30px;
+            left: 35px;
+        }
+
+        .circle-two {
+            position: absolute;
+
+            width: 125px;
+            height: 125px;
+
+            border-radius: 50%;
+
+            background: rgba(139, 92, 246, 0.10);
+
+            top: 62px;
+            left: 68px;
+        }
+
+        .visual-icon {
+            position: absolute;
+
+            left: 102px;
+            top: 91px;
+
+            width: 60px;
+            height: 60px;
+
+            border-radius: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 28px;
+
+            background:
+                linear-gradient(135deg, #ec4899, #8b5cf6);
+
+            box-shadow:
+                0 10px 30px rgba(139, 92, 246, 0.25);
+        }
+
+        .floating-card {
+            position: absolute;
+
+            right: 18px;
+            top: 25px;
+
+            background: white;
+
+            padding: 13px 15px;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 10px 25px rgba(80, 60, 100, 0.10);
+
+            border: 1px solid #f0edf4;
+        }
+
+        .floating-card small {
+            display: block;
+
+            color: #9b95a5;
+
+            font-size: 9px;
+
+            margin-bottom: 4px;
+        }
+
+        .floating-card strong {
+            font-size: 13px;
+
+            color: #5b21b6;
+        }
+
+        .floating-card.two {
+            right: 25px;
+
+            top: auto;
+            bottom: 25px;
+        }
+
+
+        /* RIGHT */
+
+        .hero-right {
+            min-width: 0;
+        }
+
+
+        /* MODEL SELECTOR */
+
+        .model-wrapper {
+            margin-bottom: 25px;
+        }
+
+        .section-label {
+            color: #8c8697;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 11px;
+        }
+
+        .model-select {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 10px;
+
+            padding: 6px;
+
+            background: #f7f5fa;
+
+            border: 1px solid #ebe7f0;
+
+            border-radius: 16px;
+        }
+
+        .model-select label {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 14px 10px;
+
+            border-radius: 11px;
+
+            color: #777184;
+
+            font-size: 13px;
+
+            font-weight: 650;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        .model-select label:hover {
+            background: white;
+
+            color: #7c3aed;
+
+            box-shadow:
+                0 5px 15px rgba(90, 60, 120, 0.07);
+        }
+
+        .model-select input[type="radio"] {
+            appearance: none;
+
+            width: 16px;
+            height: 16px;
+
+            border-radius: 50%;
+
+            border: 2px solid #c4bdcc;
+
+            transition: 0.2s;
+        }
+
+        .model-select input[type="radio"]:checked {
+            border: 5px solid #ec4899;
+
+            box-shadow:
+                0 0 0 3px rgba(236, 72, 153, 0.10);
+        }
+
+
+        /* FEATURE SECTIONS */
+
+        .feature-section {
+            margin-bottom: 20px;
+
+            padding: 21px;
+
+            border-radius: 20px;
+
+            background: white;
+
+            border: 1px solid #eeeaf2;
+
+            box-shadow:
+                0 7px 25px rgba(80, 60, 100, 0.035);
+
+            transition: 0.25s;
+        }
+
+        .feature-section:hover {
+            box-shadow:
+                0 12px 32px rgba(80, 60, 100, 0.07);
+        }
+
+        .feature-heading {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            margin-bottom: 17px;
+        }
+
+        .feature-number {
+            width: 31px;
+            height: 31px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(135deg, #ec4899, #8b5cf6);
+        }
+
+        .feature-heading h2 {
+            font-size: 15px;
+
+            color: #373044;
+        }
+
+        .feature-heading span {
+            margin-left: auto;
+
+            color: #aaa4b1;
+
+            font-size: 10px;
+        }
+
+
+        /* INPUTS */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 11px;
+        }
+
+        .input-group {
+            padding: 13px 14px;
+
+            border-radius: 12px;
+
+            background: #faf9fc;
+
+            border: 1px solid #eeeaf2;
+
+            transition: 0.2s;
+        }
+
+        .input-group:hover {
+            background: white;
+
+            border-color: #e8cde0;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 20px rgba(160, 80, 130, 0.06);
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #858090;
+
+            font-size: 10px;
+
+            font-weight: 650;
+        }
+
+        input[type="number"] {
+            width: 100%;
+
+            padding: 5px 0;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            color: #302940;
+
+            font-size: 15px;
+
+            font-weight: 650;
+        }
+
+        input[type="number"]:focus {
+            color: #c02672;
+        }
+
+
+        /* BUTTON */
+
+        button {
+            width: 100%;
+
+            margin-top: 4px;
+
+            padding: 17px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(135deg, #ec4899, #8b5cf6);
+
+            box-shadow:
+                0 12px 30px rgba(139, 92, 246, 0.20),
+                0 5px 15px rgba(236, 72, 153, 0.10);
+
+            transition: 0.25s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 18px 38px rgba(139, 92, 246, 0.27),
+                0 7px 20px rgba(236, 72, 153, 0.14);
+        }
+
+
+        /* RESULT */
+
+        .result {
+            margin-top: 22px;
+
+            padding: 27px;
+
+            text-align: center;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(135deg, #fff1f8, #f5f3ff);
+
+            border: 1px solid #eadcf0;
+
+            box-shadow:
+                0 10px 30px rgba(100, 70, 120, 0.08);
+
+            animation: resultAppear 0.45s ease;
+        }
+
+        .result h2 {
+            margin: 0 0 9px;
+
+            font-size: 25px;
+
+            color: #c02672;
+        }
+
+        .result .model-used {
+            color: #858090;
+
+            font-size: 13px;
+
+            margin-top: -4px;
+        }
+
+        .result p:last-child {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 10px 20px;
+
+            border-radius: 50px;
+
+            background: white;
+
+            color: #6d28d9;
+
+            font-weight: 750;
+
+            box-shadow:
+                0 5px 15px rgba(80, 60, 100, 0.07);
+        }
+
+
+        /* MODEL INFORMATION */
+
+        .information {
+            margin-top: 50px;
+
+            padding-top: 35px;
+
+            border-top: 1px solid #eeeaf2;
+        }
+
+        .information-header {
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+        .information-header h2 {
+            font-size: 25px;
+
+            color: #302940;
+
+            margin-bottom: 7px;
+        }
+
+        .information-header p {
+            color: #918a9d;
+
+            font-size: 13px;
+        }
+
+
+        /* STATS */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            padding: 20px;
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(135deg, #ffffff, #fbf9fd);
+
+            border: 1px solid #eeeaf2;
+
+            text-align: center;
+
+            transition: 0.25s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(80, 60, 100, 0.07);
+        }
+
+        .stat-value {
+            display: block;
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(135deg, #db2777, #7c3aed);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            margin-bottom: 5px;
+        }
+
+        .stat-name {
+            color: #8c8697;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* MODEL CARDS */
+
+        .model-info-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .model-card {
+            padding: 22px;
+
+            border-radius: 18px;
+
+            background: #faf9fc;
+
+            border: 1px solid #eeeaf2;
+        }
+
+        .model-card-top {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .model-card h3 {
+            color: #393145;
+
+            font-size: 16px;
+        }
+
+        .model-tag {
+            padding: 5px 9px;
+
+            border-radius: 50px;
+
+            background: #fdf2f8;
+
+            color: #db2777;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+        }
+
+        .metric-row {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 11px;
+        }
+
+        .metric-name {
+            color: #858090;
+
+            font-size: 12px;
+        }
+
+        .metric-value {
+            color: #5b21b6;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+        .metric-bar {
+            height: 5px;
+
+            background: #eeeaf3;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-bottom: 15px;
+        }
+
+        .metric-fill {
+            height: 100%;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(90deg, #ec4899, #8b5cf6);
+        }
+
+
+        /* DISCLAIMER */
+
+        .disclaimer {
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 12px;
+
+            padding: 17px 18px;
+
+            border-radius: 15px;
+
+            background: #fffaf5;
+
+            border: 1px solid #f5e6d0;
+
+            color: #806d5c;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        .disclaimer-icon {
+            min-width: 25px;
+
+            height: 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #fff0d9;
+
+            color: #c27a20;
+
+            font-weight: 800;
+        }
+
+
+        @keyframes resultAppear {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 950px) {
+
+            body {
+                padding: 18px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-left {
+                position: static;
+            }
+
+            .visual-card {
+                display: none;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                padding: 18px;
+
+                border-radius: 22px;
+            }
+
+            .status {
+                display: none;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .model-select {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-section {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .model-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- TOP BAR -->
+
+    <div class="top-line">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ✦
+            </div>
+
+            <div class="brand-text">
+                Medical AI System
+            </div>
+
+        </div>
+
+
+        <div class="status">
+
+            <span class="status-dot"></span>
+
+            Prediction System Ready
+
+        </div>
+
+    </div>
+
+
+    <div class="hero">
+
+
+        <!-- LEFT -->
+
+        <div class="hero-left">
+
+            <div class="mini-label">
+                AI-Powered Analysis
+            </div>
+
+
+            <h1>
+                Breast Cancer<br>
+                <span>Prediction</span>
+            </h1>
+
+
+            <p class="description">
+                Enter the tumor measurements below to
+                generate a prediction using your selected
+                machine learning model.
+            </p>
+
+
+            <div class="visual-card">
+
+                <div class="circle-one"></div>
+
+                <div class="circle-two"></div>
+
+                <div class="visual-icon">
+                    ✚
+                </div>
+
+
+                <div class="floating-card">
+
+                    <small>AI ANALYSIS</small>
+
+                    <strong>Ready</strong>
+
+                </div>
+
+
+                <div class="floating-card two">
+
+                    <small>MODELS</small>
+
+                    <strong>ML / ANN</strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT -->
+
+        <div class="hero-right">
+
+
+            <!-- MODEL SELECTOR -->
+
+            <div class="model-wrapper">
+
+                <div class="section-label">
+                    Select Prediction Model
+                </div>
+
+
+                <div class="model-select">
+
+                    <label>
+
+                        <input type="radio"
+                               name="model_type"
+                               value="ml"
+                               form="prediction-form"
+                               {% if not selected_model or selected_model == 'ml' %}checked{% endif %}>
+
+                        ML Model (Logistic Regression)
+
+                    </label>
+
+
+                    <label>
+
+                        <input type="radio"
+                               name="model_type"
+                               value="ann"
+                               form="prediction-form"
+                               {% if selected_model == 'ann' %}checked{% endif %}>
+
+                        ANN Model (Neural Network)
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <form id="prediction-form"
+                  action="/"
+                  method="POST">
+
+
+                <!-- MEAN FEATURES -->
+
+                <div class="feature-section">
+
+                    <div class="feature-heading">
+
+                        <div class="feature-number">
+                            01
+                        </div>
+
+                        <h2>
+                            Mean Features
+                        </h2>
+
+                        <span>
+                            10 PARAMETERS
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="input-group">
+                            <label>Radius Mean</label>
+                            <input type="number" step="any" name="radius_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Texture Mean</label>
+                            <input type="number" step="any" name="texture_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Perimeter Mean</label>
+                            <input type="number" step="any" name="perimeter_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Area Mean</label>
+                            <input type="number" step="any" name="area_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Smoothness Mean</label>
+                            <input type="number" step="any" name="smoothness_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Compactness Mean</label>
+                            <input type="number" step="any" name="compactness_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concavity Mean</label>
+                            <input type="number" step="any" name="concavity_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concave Points Mean</label>
+                            <input type="number" step="any" name="concave_points_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Symmetry Mean</label>
+                            <input type="number" step="any" name="symmetry_mean" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Fractal Dimension Mean</label>
+                            <input type="number" step="any" name="fractal_dimension_mean" required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SE FEATURES -->
+
+                <div class="feature-section">
+
+                    <div class="feature-heading">
+
+                        <div class="feature-number">
+                            02
+                        </div>
+
+                        <h2>
+                            Standard Error Features
+                        </h2>
+
+                        <span>
+                            10 PARAMETERS
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="input-group">
+                            <label>Radius SE</label>
+                            <input type="number" step="any" name="radius_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Texture SE</label>
+                            <input type="number" step="any" name="texture_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Perimeter SE</label>
+                            <input type="number" step="any" name="perimeter_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Area SE</label>
+                            <input type="number" step="any" name="area_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Smoothness SE</label>
+                            <input type="number" step="any" name="smoothness_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Compactness SE</label>
+                            <input type="number" step="any" name="compactness_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concavity SE</label>
+                            <input type="number" step="any" name="concavity_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concave Points SE</label>
+                            <input type="number" step="any" name="concave_points_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Symmetry SE</label>
+                            <input type="number" step="any" name="symmetry_se" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Fractal Dimension SE</label>
+                            <input type="number" step="any" name="fractal_dimension_se" required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- WORST FEATURES -->
+
+                <div class="feature-section">
+
+                    <div class="feature-heading">
+
+                        <div class="feature-number">
+                            03
+                        </div>
+
+                        <h2>
+                            Worst Features
+                        </h2>
+
+                        <span>
+                            10 PARAMETERS
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="input-group">
+                            <label>Radius Worst</label>
+                            <input type="number" step="any" name="radius_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Texture Worst</label>
+                            <input type="number" step="any" name="texture_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Perimeter Worst</label>
+                            <input type="number" step="any" name="perimeter_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Area Worst</label>
+                            <input type="number" step="any" name="area_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Smoothness Worst</label>
+                            <input type="number" step="any" name="smoothness_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Compactness Worst</label>
+                            <input type="number" step="any" name="compactness_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concavity Worst</label>
+                            <input type="number" step="any" name="concavity_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Concave Points Worst</label>
+                            <input type="number" step="any" name="concave_points_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Symmetry Worst</label>
+                            <input type="number" step="any" name="symmetry_worst" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Fractal Dimension Worst</label>
+                            <input type="number" step="any" name="fractal_dimension_worst" required>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit">
+                    Run Prediction
+                </button>
+
+
+            </form>
+
+
+            {% if result %}
+
+            <div class="result">
+
+                <h2>
+                    Prediction: {{ result }}
+                </h2>
+
+                <p class="model-used">
+                    Model used: {{ model_label }}
+                </p>
+
+                <p>
+                    Probability:
+                    {{ "%.2f"|format(probability * 100) }}%
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+
+    <!-- MODEL INFORMATION -->
+
+    <div class="information">
+
+
+        <div class="information-header">
+
+            <h2>
+                Model Performance
+            </h2>
+
+            <p>
+                Evaluation results from the trained models
+            </p>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <span class="stat-value">
+                    98.25%
+                </span>
+
+                <span class="stat-name">
+                    ML Accuracy
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-value">
+                    95.24%
+                </span>
+
+                <span class="stat-name">
+                    ML Recall
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-value">
+                    98.90%
+                </span>
+
+                <span class="stat-name">
+                    ANN Val Accuracy
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-value">
+                    569
+                </span>
+
+                <span class="stat-name">
+                    Dataset Records
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- MODEL CARDS -->
+
+        <div class="model-info-grid">
+
+
+            <!-- LOGISTIC -->
+
+            <div class="model-card">
+
+                <div class="model-card-top">
+
+                    <h3>
+                        Logistic Regression
+                    </h3>
+
+                    <span class="model-tag">
+                        ML
+                    </span>
+
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span class="metric-name">
+                        Test Accuracy
+                    </span>
+
+                    <span class="metric-value">
+                        98.25%
+                    </span>
+
+                </div>
+
+                <div class="metric-bar">
+                    <div class="metric-fill"
+                         style="width:98.25%">
+                    </div>
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span class="metric-name">
+                        Test Recall
+                    </span>
+
+                    <span class="metric-value">
+                        95.24%
+                    </span>
+
+                </div>
+
+                <div class="metric-bar">
+                    <div class="metric-fill"
+                         style="width:95.24%">
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ANN -->
+
+            <div class="model-card">
+
+                <div class="model-card-top">
+
+                    <h3>
+                        Artificial Neural Network
+                    </h3>
+
+                    <span class="model-tag">
+                        ANN
+                    </span>
+
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span class="metric-name">
+                        Validation Accuracy
+                    </span>
+
+                    <span class="metric-value">
+                        98.90%
+                    </span>
+
+                </div>
+
+                <div class="metric-bar">
+                    <div class="metric-fill"
+                         style="width:98.90%">
+                    </div>
+                </div>
+
+
+                <div class="metric-row">
+
+                    <span class="metric-name">
+                        Architecture
+                    </span>
+
+                    <span class="metric-value">
+                        3 Hidden Layers
+                    </span>
+
+                </div>
+
+                <div class="metric-bar">
+                    <div class="metric-fill"
+                         style="width:80%">
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- DISCLAIMER -->
+
+        <div class="disclaimer">
+
+            <div class="disclaimer-icon">
+                !
+            </div>
+
+            <div>
+                <strong>Important:</strong>
+                This application is an AI/ML prediction project
+                intended for educational and research purposes.
+                The prediction should not be considered a medical
+                diagnosis or a replacement for professional medical
+                advice.
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>
+
