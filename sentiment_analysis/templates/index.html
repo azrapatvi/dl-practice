@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<title>SentimentAI | Movie Review Analysis</title>
+
+<style>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        min-height: 100vh;
+
+        background:
+            radial-gradient(circle at 10% 10%, rgba(124, 58, 237, 0.20), transparent 30%),
+            radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.18), transparent 30%),
+            #080b16;
+
+        color: #ffffff;
+    }
+
+    /* NAVBAR */
+
+    .navbar {
+        width: 100%;
+        padding: 22px 7%;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .logo-box {
+        width: 40px;
+        height: 40px;
+
+        border-radius: 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+
+        box-shadow: 0 8px 25px rgba(124,58,237,0.35);
+    }
+
+    .nav-tag {
+        padding: 8px 14px;
+
+        border-radius: 30px;
+
+        font-size: 12px;
+        color: #c4b5fd;
+
+        background: rgba(124,58,237,0.10);
+        border: 1px solid rgba(124,58,237,0.25);
+    }
+
+    /* MAIN */
+
+    .main {
+        width: 86%;
+        max-width: 1150px;
+
+        margin: 0 auto;
+
+        padding: 65px 0;
+    }
+
+    .hero {
+        text-align: center;
+        max-width: 760px;
+
+        margin: 0 auto 50px;
+    }
+
+    .badge {
+        display: inline-block;
+
+        padding: 8px 16px;
+
+        border-radius: 30px;
+
+        font-size: 12px;
+        font-weight: 600;
+
+        color: #c4b5fd;
+
+        background: rgba(124,58,237,0.10);
+        border: 1px solid rgba(124,58,237,0.25);
+
+        margin-bottom: 20px;
+    }
+
+    .hero h1 {
+        font-size: clamp(38px, 6vw, 64px);
+
+        line-height: 1.05;
+
+        letter-spacing: -2px;
+
+        margin-bottom: 20px;
+    }
+
+    .gradient-text {
+        background: linear-gradient(90deg, #a78bfa, #60a5fa);
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        color: #9ca3af;
+
+        font-size: 16px;
+
+        line-height: 1.7;
+
+        max-width: 650px;
+
+        margin: auto;
+    }
+
+    /* ANALYZER */
+
+    .analyzer {
+        background: rgba(17, 24, 39, 0.82);
+
+        border: 1px solid rgba(255,255,255,0.08);
+
+        border-radius: 26px;
+
+        padding: 32px;
+
+        box-shadow:
+            0 30px 80px rgba(0,0,0,0.35),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+
+        backdrop-filter: blur(15px);
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 650;
+
+        margin-bottom: 7px;
+    }
+
+    .section-subtitle {
+        color: #6b7280;
+
+        font-size: 13px;
+
+        margin-bottom: 22px;
+    }
+
+    textarea {
+        width: 100%;
+
+        min-height: 190px;
+
+        resize: vertical;
+
+        padding: 20px;
+
+        border-radius: 18px;
+
+        border: 1px solid #273244;
+
+        outline: none;
+
+        background: #0c1220;
+
+        color: #f9fafb;
+
+        font-family: inherit;
+
+        font-size: 15px;
+
+        line-height: 1.7;
+
+        transition: 0.25s;
+    }
+
+    textarea::placeholder {
+        color: #5f6b7d;
+    }
+
+    textarea:focus {
+        border-color: #7c3aed;
+
+        box-shadow: 0 0 0 4px rgba(124,58,237,0.10);
+    }
+
+    .button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    button {
+        margin-top: 18px;
+
+        border: none;
+
+        padding: 14px 25px;
+
+        border-radius: 13px;
+
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+
+        color: white;
+
+        font-family: inherit;
+
+        font-size: 14px;
+
+        font-weight: 650;
+
+        cursor: pointer;
+
+        box-shadow: 0 12px 30px rgba(79,70,229,0.30);
+
+        transition: 0.25s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 16px 35px rgba(79,70,229,0.40);
+    }
+
+    /* RESULT */
+
+    .result {
+        margin-top: 25px;
+
+        padding: 24px;
+
+        border-radius: 18px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 20px;
+    }
+
+    .positive {
+        background: rgba(16,185,129,0.10);
+
+        border: 1px solid rgba(16,185,129,0.25);
+
+        color: #6ee7b7;
+    }
+
+    .negative {
+        background: rgba(239,68,68,0.10);
+
+        border: 1px solid rgba(239,68,68,0.25);
+
+        color: #fca5a5;
+    }
+
+    .result-label {
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 1px;
+
+        opacity: 0.65;
+
+        margin-bottom: 5px;
+    }
+
+    .result-title {
+        font-size: 25px;
+
+        font-weight: 750;
+    }
+
+    .score-box {
+        text-align: right;
+    }
+
+    .score-label {
+        display: block;
+
+        font-size: 11px;
+
+        opacity: 0.65;
+
+        margin-bottom: 4px;
+    }
+
+    .score {
+        font-size: 24px;
+
+        font-weight: 750;
+    }
+
+    /* MODEL SECTION */
+
+    .model-section {
+        margin-top: 65px;
+    }
+
+    .model-heading {
+        text-align: center;
+
+        margin-bottom: 30px;
+    }
+
+    .model-heading h2 {
+        font-size: 30px;
+
+        margin-bottom: 10px;
+    }
+
+    .model-heading p {
+        color: #6b7280;
+
+        font-size: 14px;
+    }
+
+    .cards {
+        display: grid;
+
+        grid-template-columns: repeat(4, 1fr);
+
+        gap: 16px;
+    }
+
+    .info-card {
+        background: rgba(17,24,39,0.75);
+
+        border: 1px solid rgba(255,255,255,0.07);
+
+        border-radius: 18px;
+
+        padding: 23px;
+
+        transition: 0.25s;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+
+        border-color: rgba(124,58,237,0.35);
+
+        background: rgba(24,32,51,0.85);
+    }
+
+    .card-icon {
+        font-size: 24px;
+
+        margin-bottom: 17px;
+    }
+
+    .info-card h3 {
+        font-size: 15px;
+
+        margin-bottom: 8px;
+    }
+
+    .info-card p {
+        color: #7f8a9c;
+
+        font-size: 12px;
+
+        line-height: 1.6;
+    }
+
+    .accuracy {
+        font-size: 26px;
+
+        font-weight: 750;
+
+        background: linear-gradient(90deg, #a78bfa, #60a5fa);
+
+        -webkit-background-clip: text;
+
+        -webkit-text-fill-color: transparent;
+
+        margin-bottom: 5px;
+    }
+
+    /* HOW IT WORKS */
+
+    .workflow {
+        margin-top: 60px;
+
+        padding: 30px;
+
+        border-radius: 22px;
+
+        background: linear-gradient(
+            135deg,
+            rgba(124,58,237,0.08),
+            rgba(37,99,235,0.05)
+        );
+
+        border: 1px solid rgba(124,58,237,0.12);
+    }
+
+    .workflow h2 {
+        font-size: 22px;
+
+        margin-bottom: 22px;
+    }
+
+    .steps {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 20px;
+    }
+
+    .step {
+        display: flex;
+
+        gap: 13px;
+    }
+
+    .step-number {
+        min-width: 32px;
+        height: 32px;
+
+        border-radius: 10px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(124,58,237,0.15);
+
+        color: #a78bfa;
+
+        font-size: 13px;
+
+        font-weight: 700;
+    }
+
+    .step h3 {
+        font-size: 13px;
+
+        margin-bottom: 5px;
+    }
+
+    .step p {
+        color: #6b7280;
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+    /* FOOTER */
+
+    footer {
+        text-align: center;
+
+        color: #4b5563;
+
+        font-size: 11px;
+
+        padding: 35px 0 10px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+
+        .cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .steps {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+
+        .navbar {
+            padding: 18px 5%;
+        }
+
+        .nav-tag {
+            display: none;
+        }
+
+        .main {
+            width: 92%;
+
+            padding: 45px 0;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+        }
+
+        .analyzer {
+            padding: 20px;
+
+            border-radius: 20px;
+        }
+
+        .cards {
+            grid-template-columns: 1fr;
+        }
+
+        .result {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .score-box {
+            text-align: left;
+        }
+
+        .button-wrapper {
+            display: block;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        <div class="logo-box">
+            ✦
+        </div>
+
+        <span>SentimentAI</span>
+
+    </div>
+
+    <div class="nav-tag">
+        Deep Learning Project
+    </div>
+
+</nav>
+
+
+<main class="main">
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="badge">
+            AI • NLP • DEEP LEARNING
+        </div>
+
+        <h1>
+            Understand the
+            <span class="gradient-text">Emotion</span>
+            Behind Reviews
+        </h1>
+
+        <p>
+            An AI-powered movie review sentiment analyzer
+            that uses Natural Language Processing and a
+            Recurrent Neural Network to classify reviews
+            as positive or negative.
+        </p>
+
+    </section>
+
+
+    <!-- ANALYZER -->
+
+    <section class="analyzer">
+
+        <div class="section-title">
+            Analyze a Movie Review
+        </div>
+
+        <div class="section-subtitle">
+            Enter a review below and let the model predict its sentiment.
+        </div>
+
+
+        <form action="/predict" method="post">
+
+            <textarea
+                name="text"
+                placeholder="Write something like: This movie was absolutely amazing! The acting was brilliant and the story kept me interested until the end..."
+                required></textarea>
+
+            <div class="button-wrapper">
+
+                <button type="submit">
+                    ✨ Analyze Sentiment
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if sentiment %}
+
+        <div class="result {{ 'positive' if sentiment == 'Positive' else 'negative' }}">
+
+            <div>
+
+                <div class="result-label">
+                    Prediction
+                </div>
+
+                <div class="result-title">
+
+                    {% if sentiment == 'Positive' %}
+                        Positive Review
+                    {% else %}
+                        Negative Review
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="score-box">
+
+                <span class="score-label">
+                    Model Output
+                </span>
+
+                <span class="score">
+                    {{ "%.4f"|format(prediction) }}
+                </span>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- MODEL INFORMATION -->
+
+    <section class="model-section">
+
+        <div class="model-heading">
+
+            <h2>
+                About the Model
+            </h2>
+
+            <p>
+                A deep learning model trained for binary sentiment classification.
+            </p>
+
+        </div>
+
+
+        <div class="cards">
+
+
+            <div class="info-card">
+
+                <div class="card-icon">
+                    🧠
+                </div>
+
+                <div class="accuracy">
+                    82.95%
+                </div>
+
+                <h3>
+                    Test Accuracy
+                </h3>
+
+                <p>
+                    Accuracy achieved by the RNN model
+                    on the IMDB test dataset.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="card-icon">
+                    🔄
+                </div>
+
+                <h3>
+                    Simple RNN
+                </h3>
+
+                <p>
+                    A Recurrent Neural Network processes
+                    the sequence of words in a movie review.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="card-icon">
+                    🔤
+                </div>
+
+                <h3>
+                    Embedding Layer
+                </h3>
+
+                <p>
+                    Converts word indexes into dense
+                    128-dimensional vector representations.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="card-icon">
+                    🎬
+                </div>
+
+                <h3>
+                    IMDB Dataset
+                </h3>
+
+                <p>
+                    25,000 training reviews and 25,000
+                    test reviews for movie sentiment analysis.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- WORKFLOW -->
+
+        <div class="workflow">
+
+            <h2>
+                How It Works
+            </h2>
+
+
+            <div class="steps">
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Enter Review
+                        </h3>
+
+                        <p>
+                            The user enters a movie review
+                            into the text box.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Process Text
+                        </h3>
+
+                        <p>
+                            Words are converted into numerical
+                            indexes and padded to 500 tokens.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Predict Sentiment
+                        </h3>
+
+                        <p>
+                            The RNN analyzes the sequence and
+                            produces a sentiment prediction.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        SentimentAI • Built with Python, TensorFlow, FastAPI & RNN
+    </footer>
+
+
+</main>
+
+
+</body>
+
+</html>
