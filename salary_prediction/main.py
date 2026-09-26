@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import tensorflow as tf
 import pandas as pd
+import os
 
 # ----------------------------------------------------------------------------
 # Page config
@@ -134,8 +135,9 @@ st.markdown("""
 # ----------------------------------------------------------------------------
 @st.cache_resource
 def load_artifacts():
-    preprocessor = joblib.load('preprocessor.pkl')
-    model = tf.keras.models.load_model("price_predictor.h5", compile=False)
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    preprocessor = joblib.load(os.path.join(BASE_DIR, 'preprocessor.pkl'))
+    model = tf.keras.models.load_model(os.path.join(BASE_DIR, 'price_predictor.h5'), compile=False)
     return preprocessor, model
 
 preprocessor, model = load_artifacts()
