@@ -1,0 +1,28 @@
+# Virtual environment
+.venv/
+
+# Dataset
+dataset/
+
+# YOLO training results
+runs/
+
+# Model files
+*.pt
+*.onnx
+*.engine
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Jupyter cache
+.ipynb_checkpoints/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Temporary files
+*.tmp
+*.temp
